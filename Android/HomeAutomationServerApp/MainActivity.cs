@@ -9,7 +9,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Distribute;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Analytics;
-
+using Xamarin.Essentials;
 
 namespace HomeAutomationServerApp
 {
@@ -29,16 +29,36 @@ namespace HomeAutomationServerApp
 
             JSBridge.Init(this.ApplicationContext);
 
-            int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-            uiOptions |= (int)SystemUiFlags.HideNavigation;
-            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)SystemUiFlags.HideNavigation;
+
+            //if (DeviceInfo.Version.Major > 10)
+            //{
+            //    this.Window.SetDecorFitsSystemWindows(false);
+            //    this.Window.InsetsController.Hide(WindowInsets.Type.SystemBars());
+            //}
+            //else
+            //{
+                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
+
+                uiOptions |= (int)SystemUiFlags.LowProfile;
+                uiOptions |= (int)SystemUiFlags.Fullscreen;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            //}
+
+            this.Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TurnScreenOn | WindowManagerFlags.LayoutNoLimits);
+
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
             _webView = FindViewById<WebView>(Resource.Id.webView1);
             _webView.Settings.JavaScriptEnabled = true;
-            //_webView.SetWebViewClient(new HelloWebViewClient());
+            _webView.Settings.JavaScriptCanOpenWindowsAutomatically = true;
+            _webView.Settings.DomStorageEnabled = true;
+
+            _webView.SetWebViewClient(new AppWebViewClient());
             _webView.AddJavascriptInterface(new JSBridge(), "manoirDeviceApp");
             _webView.LoadUrl(JSBridge.GetApplication());
         }
