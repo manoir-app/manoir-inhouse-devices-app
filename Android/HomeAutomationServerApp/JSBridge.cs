@@ -43,7 +43,7 @@ namespace HomeAutomationServerApp
         {
             var t = GetString("url");
             if (t == null)
-                return "https://home.anzin.carbenay.manoir.app/app/security/"; // pour l'instant
+                return "https://home.anzin.carbenay.manoir.app/devicehome/"; // pour l'instant
             return t;
         }
 
